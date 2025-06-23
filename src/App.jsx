@@ -10,6 +10,8 @@ function App() {
   useEffect(() => {
     try {
       const saved = localStorage.getItem('todos');
+      console.log("saved",saved);
+
       const parsed = saved ? JSON.parse(saved) : [];
       if (Array.isArray(parsed)) {
         setTodos(parsed);
@@ -20,19 +22,25 @@ function App() {
   }, []);
 
   // Save todos to localStorage on change
-  useEffect(() => {
-    localStorage.setItem('todos', JSON.stringify(todos));
-  }, [todos]);
+  // useEffect(() => {
+  //   localStorage.setItem('todos', JSON.stringify(todos));
+  // }, [todos]);
 
   const handleAddTodo = () => {
     if (todo.trim() !== '') {
-      setTodos((prev) => [...prev, todo]);
+      let temp = [...todos,todo];
+      console.log("temp",temp);
+      setTodos(temp);
+      console.log("Todos",todos);
+      localStorage.setItem('todos', JSON.stringify(temp));
       setTodo('');
     }
   };
 
   const handleDeleteTodo = (index) => {
-    setTodos(todos.filter((_, i) => i !== index));
+    let temp = todos.filter((_, i) => i !== index);
+    setTodos(temp);
+    localStorage.setItem('todos', JSON.stringify(temp));
   };
 
   return (
@@ -65,11 +73,11 @@ function App() {
           {todos.length === 0 ? (
             <p className="text-gray-500">No todos yet. Start by adding one above!</p>
           ) : (
-            <ul className="space-y-3">
+            <ul className="flex flex-col space-y-3">
               {todos.map((item, index) => (
                 <li
                   key={index}
-                  className="flex justify-between items-center bg-violet-50 px-4 py-3 rounded-md shadow-sm border border-violet-100"
+                  className="flex justify-between items-center bg-violet-50 px-4 py-3 rounded-md shadow-sm border border-violet-100 mb-5"
                 >
                   <span className="text-gray-800">{item}</span>
                   <button
